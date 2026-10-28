@@ -1,0 +1,25 @@
+# RPG Arena on http://localhost:5175. Runs are kept in a SQLite file on the arena_data volume.
+name: rpg-arena
+
+services:
+  arena:
+    build:
+      context: ..
+    container_name: rpg-arena
+    ports:
+      - "5175:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      EnableApiDocs: "true"
+    volumes:
+      - arena_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080 && printf 'GET /health/ready HTTP/1.0\r\n\r\n' >&3 && grep -q ' 200 ' <&3"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
+
+volumes:
+  arena_data:

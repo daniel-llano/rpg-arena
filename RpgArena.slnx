@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/RpgArena.Api/RpgArena.Api.csproj" />
+    <Project Path="src/RpgArena.Cli/RpgArena.Cli.csproj" />
+    <Project Path="src/RpgArena.Core/RpgArena.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/RpgArena.Api.Tests/RpgArena.Api.Tests.csproj" />
+    <Project Path="tests/RpgArena.Core.Tests/RpgArena.Core.Tests.csproj" />
+  </Folder>
+</Solution>
