@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="A turn-based arena. Pick a hero, fight until you fall, and climb the leaderboard." />
+  <title>RPG Arena</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <main>
+    <header class="top">
+      <h1><a href="./">RPG Arena</a></h1>
+      <p class="muted">Pick a hero and fight one battle after another until you fall.</p>
+    </header>
+
+    <section id="setup" class="panel" hidden>
+      <h2>New hero</h2>
+      <form id="start-form">
+        <label for="hero-name">Name</label>
+        <input id="hero-name" required minlength="2" maxlength="24" placeholder="Aria" autocomplete="off" />
+        <fieldset>
+          <legend>Class</legend>
+          <div id="classes" class="choices"></div>
+        </fieldset>
+        <fieldset>
+          <legend>Weapon</legend>
+          <div id="weapons" class="choices"></div>
+        </fieldset>
+        <p id="start-error" class="error" role="alert" hidden></p>
+        <button type="submit" class="primary">Enter the arena</button>
+      </form>
+    </section>
+
+    <section id="battle" hidden>
+      <div class="fighters">
+        <div class="panel fighter">
+          <div class="name"><strong id="hero-title"></strong> <span id="hero-sub" class="muted"></span></div>
+          <div class="bar"><div id="hero-hp" class="fill hero"></div></div>
+          <div id="hero-stats" class="muted small"></div>
+        </div>
+        <div class="vs">vs</div>
+        <div class="panel fighter">
+          <div class="name"><strong id="enemy-title"></strong></div>
+          <div class="bar"><div id="enemy-hp" class="fill enemy"></div></div>
+          <div id="enemy-stats" class="muted small"></div>
+        </div>
+      </div>
+
+      <div id="controls" class="actions">
+        <button data-action="Attack" class="primary">Attack</button>
+        <button data-action="Defend">Defend</button>
+        <button data-action="Special" id="special-btn">Special</button>
+        <button data-action="Potion" id="potion-btn">Potion</button>
+      </div>
+      <div id="after" class="actions" hidden>
+        <p id="outcome" class="outcome"></p>
+        <button id="next-btn" class="primary">Next battle</button>
+        <button id="new-btn">New hero</button>
+      </div>
+      <p id="spectating" class="muted small" hidden>Connecting to the live feed…</p>
+      <p id="action-error" class="error" role="alert" hidden></p>
+
+      <ol id="log" class="panel log" aria-live="polite"></ol>
+      <p class="muted small">Share to let others watch: <a id="watch-link"></a></p>
+    </section>
+
+    <section class="panel">
+      <h2>Leaderboard</h2>
+      <table>
+        <thead><tr><th>#</th><th>Hero</th><th>Class</th><th class="num">Level</th><th class="num">Wins</th><th class="num">Gold</th><th></th></tr></thead>
+        <tbody id="leaderboard"><tr><td colspan="7" class="muted">Loading…</td></tr></tbody>
+      </table>
+    </section>
+  </main>
+  <script src="lib/signalr.min.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
