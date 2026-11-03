@@ -20,7 +20,8 @@ Author: Daniel Llano ([github.com/daniel-llano](https://github.com/daniel-llano)
 ```
 rpg-arena/
 ├── src/RpgArena.Core   game rules, no dependencies
-├── src/RpgArena.Api    minimal API, SignalR hub, SQLite, browser UI in wwwroot
+├── src/RpgArena.Api    minimal API, SignalR hub, SQLite, serves the built web app
+├── web/                browser UI: React, TypeScript, Vite, PixiJS
 ├── src/RpgArena.Cli    the same game in a terminal
 ├── tests/              engine tests and API integration tests
 ├── infra/              docker-compose
@@ -36,7 +37,24 @@ Every random roll comes from a small seeded generator stored with the run. A run
 dotnet run --project src/RpgArena.Cli     # terminal
 ```
 
-For local work without Docker: `dotnet run --project src/RpgArena.Api`. The API reference is at `/docs` in Development.
+For local work without Docker:
+
+```bash
+dotnet run --project src/RpgArena.Api     # API on http://localhost:5175, docs at /docs
+cd web && npm install && npm run dev      # UI on http://localhost:5176, proxies /api and /hubs
+```
+
+`npm run build` writes the UI into `src/RpgArena.Api/wwwroot`, so the API serves it on one origin. The Dockerfile does the same.
+
+## Browser UI
+
+The page is React and TypeScript, built with Vite. Forms, buttons, health bars, the log and the leaderboard are plain HTML, so they work with a keyboard and a screen reader. The arena above them is drawn with [PixiJS](https://pixijs.com) 8. The heroes and monsters are vector shapes drawn in code, so there are no image assets.
+
+After every turn the stage reads the new log lines and animates them: sword lunges, arrows, magic bolts, the Fireball, Holy Light, potions, guard, crits, level ups, and the fall. Spectators see the same animations over SignalR. PixiJS loads in its own chunk after the page is up. If WebGL isn't available, or the player asks for reduced motion, the stage stays still and nothing else changes.
+
+Keys during a battle: `1` Attack, `2` Defend, `3` Special, `4` Potion.
+
+Why this stack: the game state lives on the server and changes once per turn, so the UI is mostly forms and panels, which suits React. A full game framework like Phaser brings physics, scenes and input handling that a turn-based fight doesn't need. PixiJS is only a renderer, so it sits inside one React component and draws the arena.
 
 ## API
 
@@ -64,7 +82,7 @@ Only the token's SHA-256 hash is stored. Two actions racing on the same run can'
 ## Tests
 
 ```bash
-./scripts/test.sh   # engine tests + API tests on a temp SQLite file (including SignalR)
+./scripts/test.sh   # engine and API tests (temp SQLite, SignalR), then web typecheck, tests and build
 ./scripts/e2e.sh    # Docker + Playwright
 ```
 

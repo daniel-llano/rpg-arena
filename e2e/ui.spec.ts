@@ -42,6 +42,25 @@ test.describe("RPG Arena", () => {
     await expect(spectator.locator("#log")).toContainText("raises a guard");
   });
 
+  test("the arena stage draws the battle and the number keys play turns", async ({ page }) => {
+    await page.goto("/");
+    await page.getByLabel("Name").fill("Keys");
+    await page.locator("#classes").getByText("Mage", { exact: true }).click();
+    await page.getByRole("button", { name: "Enter the arena" }).click();
+
+    const stage = page.locator("#stage canvas");
+    await expect(stage).toBeVisible();
+    expect((await stage.boundingBox())!.width).toBeGreaterThan(300);
+
+    await page.keyboard.press("2");
+    await expect(page.locator("#log")).toContainText("Keys raises a guard.");
+    // A key pressed while the last turn is still in flight is ignored, so wait for the buttons.
+    await expect(page.getByRole("button", { name: "Fireball" })).toBeEnabled();
+    await page.keyboard.press("3");
+    await expect(page.locator("#log")).toContainText("Keys hurls a Fireball");
+    await expect(page.getByRole("button", { name: /Fireball \(\d\)/ })).toBeDisabled();
+  });
+
   test("names are validated", async ({ page }) => {
     await page.goto("/");
     await page.getByLabel("Name").fill("X");

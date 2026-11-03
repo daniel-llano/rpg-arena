@@ -8,6 +8,8 @@ TestResults/
 publish/
 
 node_modules/
+# Built from web/ by npm run build (and by the Dockerfile).
+src/RpgArena.Api/wwwroot/
 dist/
 playwright-report/
 test-results/

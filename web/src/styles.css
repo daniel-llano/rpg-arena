@@ -7,6 +7,7 @@
   --accent: #c4552a;
   --hero: #4caf7a;
   --enemy: #d0483c;
+  --gold: #e3b54a;
   font-family: system-ui, "Segoe UI", sans-serif;
   color: var(--text);
   background: var(--bg);
@@ -128,6 +129,13 @@ button:disabled {
   cursor: not-allowed;
 }
 
+button:focus-visible,
+a:focus-visible,
+.choice:has(input:focus-visible) {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
 button.primary {
   background: var(--accent);
   border-color: var(--accent);
@@ -136,6 +144,46 @@ button.primary {
 
 #start-form button {
   margin-top: 1rem;
+}
+
+.choice > span {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.stats {
+  font-variant-numeric: tabular-nums;
+}
+
+.stage {
+  position: relative;
+  aspect-ratio: 900 / 320;
+  width: 100%;
+  margin: 1rem 0 0.75rem;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #1d1813;
+  border: 1px solid var(--line);
+  box-shadow: inset 0 0 60px rgb(0 0 0 / 45%);
+}
+
+.stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+kbd {
+  margin-left: 0.5rem;
+  padding: 0 0.35rem;
+  border: 1px solid currentcolor;
+  border-radius: 5px;
+  font: 0.75rem ui-monospace, Consolas, monospace;
+  opacity: 0.55;
+}
+
+.hint {
+  margin: 0.5rem 0 0;
 }
 
 .fighters {
@@ -175,6 +223,18 @@ button.primary {
   background: var(--enemy);
 }
 
+.fill.hero.low {
+  background: var(--gold);
+}
+
+.fighter.hero .fill {
+  transition: width 0.45s ease 0.35s;
+}
+
+.fighter.enemy .fill {
+  transition: width 0.45s ease 0.15s;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;
@@ -187,6 +247,14 @@ button.primary {
   width: 100%;
   margin: 0;
   font-weight: 600;
+}
+
+.outcome.win {
+  color: var(--gold);
+}
+
+.outcome.loss {
+  color: #ff8a7a;
 }
 
 .error {
@@ -205,6 +273,19 @@ button.primary {
 
 .log li {
   padding: 0.15rem 0;
+  opacity: 0.75;
+}
+
+.log li.latest {
+  opacity: 1;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+tr.current td {
+  background: #2b2119;
 }
 
 table {
@@ -230,6 +311,20 @@ td {
 
   .vs {
     text-align: center;
+  }
+}
+
+@media (hover: none) {
+  kbd,
+  .hint {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fill,
+  .fighter .fill {
+    transition: none;
   }
 }
 

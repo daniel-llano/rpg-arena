@@ -8,3 +8,5 @@
 **/playwright-report/
 **/test-results/
 *.db
+src/RpgArena.Api/wwwroot/
+web/dist/

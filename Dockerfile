@@ -1,3 +1,10 @@
+FROM node:22-alpine AS web
+WORKDIR /web
+COPY web/package.json web/package-lock.json ./
+RUN npm ci --no-audit --no-fund
+COPY web ./
+RUN npm run build -- --outDir dist
+
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 COPY Directory.Build.props Directory.Packages.props ./
@@ -5,6 +12,7 @@ COPY src/RpgArena.Core/RpgArena.Core.csproj src/RpgArena.Core/
 COPY src/RpgArena.Api/RpgArena.Api.csproj src/RpgArena.Api/
 RUN dotnet restore src/RpgArena.Api/RpgArena.Api.csproj
 COPY src src
+COPY --from=web /web/dist src/RpgArena.Api/wwwroot
 RUN dotnet publish src/RpgArena.Api/RpgArena.Api.csproj -c Release -o /app/publish --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final

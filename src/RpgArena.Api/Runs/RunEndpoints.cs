@@ -130,8 +130,10 @@ public static class RunEndpoints
         record.UpdatedAt = DateTime.UtcNow;
     }
 
+    // SQLite hands DateTime back without a kind. Mark it UTC so every view serializes the same way,
+    // whether it was just saved or read from the database, and clients can compare them.
     private static RunView View(RunRecord record, Run run) =>
-        new(record.Id, run.Status, run.Wins, run.Turn, run.Hero, run.Enemy, run.Log, record.UpdatedAt);
+        new(record.Id, run.Status, run.Wins, run.Turn, run.Hero, run.Enemy, run.Log, DateTime.SpecifyKind(record.UpdatedAt, DateTimeKind.Utc));
 
     private static string Hash(string token) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(token)));
 }

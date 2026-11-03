@@ -157,6 +157,17 @@ public class RunTests(ArenaFactory factory) : IClassFixture<ArenaFactory>
     }
 
     [Fact]
+    public async Task UpdatedAt_IsUtc_WhenReadBackFromTheDatabase()
+    {
+        var started = await StartAsync();
+
+        using var doc = JsonDocument.Parse(await _client.GetStringAsync($"/api/runs/{started.Run.Id}"));
+        var updatedAt = doc.RootElement.GetProperty("updatedAt").GetString();
+
+        updatedAt.Should().EndWith("Z", "clients order live updates by this timestamp");
+    }
+
+    [Fact]
     public async Task UnknownRun_Returns404()
     {
         (await _client.GetAsync($"/api/runs/{Guid.NewGuid()}")).StatusCode.Should().Be(HttpStatusCode.NotFound);
