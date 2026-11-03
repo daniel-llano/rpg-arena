@@ -58,6 +58,7 @@ Only the token's SHA-256 hash is stored. Two actions racing on the same run can'
 |-----|-------|
 | `ConnectionStrings:Arena` | SQLite file. The container keeps it in the `/data` volume |
 | `RateLimiting:StartsPerMinute`, `RateLimiting:ActionsPerMinute` | Per IP, default 20 and 240 |
+| `ForwardedHeaders:KnownProxies`, `ForwardedHeaders:KnownNetworks` | IPs and CIDR ranges of the reverse proxies allowed to set `X-Forwarded-For` and `-Proto`. Empty means loopback only |
 | `EnableApiDocs` | Serves `/openapi/v1.json` and `/docs` outside Development |
 
 ## Tests
